@@ -1,8 +1,5 @@
 from base.processing import *
 
-path_1 = 'my_excel_file.xlsx'
-path_2 = 'another_excel_file.xlsx'
-
 
 def func_1(args):
     path = args.get('path', 'no path in config file')
@@ -45,7 +42,6 @@ def add_report_to_consolidated(args):
 
     # get memory or create empty if doesn't exist yet
     all_files = [v for v in os.listdir(directory) if not v.startswith('.')]
-    pprint(all_files)
     if memory_file not in all_files:
         content = {
             'skip_files': [consolidated_file, memory_file],
@@ -59,23 +55,27 @@ def add_report_to_consolidated(args):
     if consolidated_file in all_files:
         result = pd.read_excel(directory + consolidated_file)
     else:
-        result = pd.DataFrame(columns=['transaction_date'], index=[])
-        pprint(result)
+        result = pd.DataFrame(columns=['transaction_time', 'value_date', 'currency', 'sum',
+                                       'balance_after', 'comment', 'reference', 'client'], index=[])
+    refs = set(result['reference'])
+    client_set = set(memory['clients']) | set(result['client']) - {0}
+    memory['clients'] = list(client_set)
 
+    to_add = []
     files_to_add = [v for v in all_files if v not in memory['skip_files']]
     print(f'adding data from reports: {files_to_add}')
-    client_list = memory['clients']
     for r in files_to_add:
         try:
-            report = pd.read_excel(directory + r)
+            report = pd.read_excel(directory + r).fillna(0)
+            to_add += process_report(report, refs, client_set)
             memory['skip_files'].append(r)
         except Exception as ex:
             print(f'failed to process {r}')
             print(ex)
 
-    result.to_excel(directory + consolidated_file, index=False)
-    with open(directory + memory_file, 'w') as f:
-        json.dump(memory, f)
+    # result.to_excel(directory + consolidated_file, index=False)
+    # with open(directory + memory_file, 'w') as f:
+        # json.dump(memory, f)
 
 
 def main(config, pause=10):

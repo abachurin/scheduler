@@ -2,14 +2,14 @@
   "excel": 0,
   "start_list": {
     "func_1": [
-      "min 60"
+      "20:00"
     ],
     "func_2": [
       "09:00",
       "18:30"
     ],
     "func_3": [
-      "min 1"
+      "20:00"
     ],
     "add_report_to_consolidated": [
       "min 15"
