@@ -39,8 +39,10 @@ def process_report(report: pd.DataFrame, refs: set, client_set: set):
             break
         if line['reference'] in refs:
             continue
+        refs.add(line['reference'])
         line['currency'] = curr
-        line['client'] = None
+        line['value_date'] = str(datetime.strptime(line['value_date'], '%d/%m/%Y'))[:10]
+        line['client'] = 0
         for cl in client_set:
             if cl in line['comment']:
                 line['client'] = cl

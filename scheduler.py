@@ -44,8 +44,7 @@ def add_report_to_consolidated(args):
     all_files = [v for v in os.listdir(directory) if not v.startswith('.')]
     if memory_file not in all_files:
         content = {
-            'skip_files': [consolidated_file, memory_file],
-            'clients': []
+            'skip_files': [consolidated_file, memory_file]
         }
         with open(directory + memory_file, 'w') as f:
             json.dump(content, f)
@@ -53,29 +52,32 @@ def add_report_to_consolidated(args):
         memory = json.load(f)
 
     if consolidated_file in all_files:
-        result = pd.read_excel(directory + consolidated_file)
+        result = pd.read_excel(directory + consolidated_file).fillna(0)
     else:
         result = pd.DataFrame(columns=['transaction_time', 'value_date', 'currency', 'sum',
                                        'balance_after', 'comment', 'reference', 'client'], index=[])
     refs = set(result['reference'])
-    client_set = set(memory['clients']) | set(result['client']) - {0}
-    memory['clients'] = list(client_set)
+    client_set = set(result['client']) - {0}
 
     to_add = []
     files_to_add = [v for v in all_files if v not in memory['skip_files']]
-    print(f'adding data from reports: {files_to_add}')
+    print('adding data from reports:')
     for r in files_to_add:
         try:
             report = pd.read_excel(directory + r).fillna(0)
-            to_add += process_report(report, refs, client_set)
+            new = process_report(report, refs, client_set)
+            to_add += new
             memory['skip_files'].append(r)
+            print(f'{r} - success, {len(new)} lines')
         except Exception as ex:
             print(f'failed to process {r}')
             print(ex)
 
-    # result.to_excel(directory + consolidated_file, index=False)
-    # with open(directory + memory_file, 'w') as f:
-        # json.dump(memory, f)
+    result = pd.concat([result, pd.DataFrame(to_add)], axis=0).sort_values('value_date')
+    result.to_excel(directory + consolidated_file, index=False)
+    with open(directory + memory_file, 'w') as f:
+        json.dump(memory, f)
+    print(f'consolidated report refreshed at {datetime.now()}')
 
 
 def main(config, pause=10):
