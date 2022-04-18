@@ -1,0 +1,32 @@
+{
+  "excel": 0,
+  "start_list": {
+    "func_1": [
+      "min 60"
+    ],
+    "func_2": [
+      "09:00",
+      "18:30"
+    ],
+    "func_3": [
+      "min 1"
+    ],
+    "add_report_to_consolidated": [
+      "min 15"
+    ]
+  },
+  "func_1": {
+    "path": "my_excel_file.xlsx"
+  },
+  "func_2": {
+    "path": "another_excel_file.xlsx"
+  },
+  "func_3": {
+    "to_print": "Ola!"
+  },
+  "add_report_to_consolidated": {
+    "directory": "/Users/aleksej/dasha/reports_to_save/",
+    "consolidated_file": "report.xlsx",
+    "memory": "memory.json"
+  }
+}
