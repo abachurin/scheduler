@@ -50,4 +50,3 @@ def process_report(report: pd.DataFrame, refs: set, client_set: set):
         res.append(line)
 
     return res
-
