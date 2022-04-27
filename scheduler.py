@@ -39,6 +39,7 @@ def add_report_to_consolidated(args):
     directory = args['directory']
     consolidated_file = args['consolidated_file']
     memory_file = args['memory']
+    entities = args['entities']
 
     # get memory or create empty if doesn't exist yet
     all_files = [v for v in os.listdir(directory) if not v.startswith('.')]
@@ -52,29 +53,40 @@ def add_report_to_consolidated(args):
         memory = json.load(f)
 
     if consolidated_file in all_files:
-        result = pd.read_excel(directory + consolidated_file).fillna(0)
+        result = pd.read_excel(directory + consolidated_file, sheet_name=None)
     else:
-        result = pd.DataFrame(columns=['transaction_time', 'value_date', 'currency', 'sum',
-                                       'balance_after', 'comment', 'reference', 'client'], index=[])
-    refs = set(result['reference'])
-    client_set = set(result['client']) - {0}
+        result = {}
+    for e in entities:
+        if e in result:
+            result[e] = result[e].fillna(0)
+        else:
+            result[e] = pd.DataFrame(columns=['transaction_time', 'value_date', 'currency', 'sum',
+                                              'balance_after', 'comment', 'reference', 'client'], index=[])
+    refs = {e: set(result[e]['reference']) for e in entities}
+    client_set = set.union(*[set(result[e]['client']) for e in entities]) - {0}
 
-    to_add = []
+    to_add = {e: [] for e in entities}
     files_to_add = [v for v in all_files if v not in memory['skip_files']]
     print('adding data from reports:')
     for r in files_to_add:
         try:
             report = pd.read_excel(directory + r).fillna(0)
-            new = process_report(report, refs, client_set)
-            to_add += new
-            memory['skip_files'].append(r)
-            print(f'{r} - success, {len(new)} lines')
+            new, entity = process_report(report, refs, client_set, entities)
+            if entity == 'none':
+                print(f'No entity detected in {r} - please check the file!')
+            elif entity == 'new':
+                print(f'New entity detected in {r}! add it to config file and process again')
+            else:
+                to_add[entity] += new
+                memory['skip_files'].append(r)
+                print(f'{r} - success, {len(new)} lines')
         except Exception as ex:
             print(f'failed to process {r}')
             print(ex)
 
-    result = pd.concat([result, pd.DataFrame(to_add)], axis=0).sort_values('value_date')
-    result.to_excel(directory + consolidated_file, index=False)
+    for e in entities:
+        result[e] = pd.concat([result[e], pd.DataFrame(to_add[e])], axis=0).sort_values('value_date')
+    save_excel_multiple_sheets(result, directory + consolidated_file)
     with open(directory + memory_file, 'w') as f:
         json.dump(memory, f)
     print(f'consolidated report refreshed at {datetime.now()}')
