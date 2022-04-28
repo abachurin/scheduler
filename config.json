@@ -36,6 +36,10 @@
       "eng": "Current Balance:",
       "horizontal_offset": 2
     },
+    "look_for_client": {
+      "tur": "Sayın",
+      "eng": "Dear"
+    },
     "report_columns": ["transaction_time", "value_date", "currency" ,"sum", "balance_after", "comment", "client",
       "ref_curr", "ref_time"],
     "trans_tur": {

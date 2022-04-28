@@ -22,13 +22,15 @@ def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: 
     curr_find = np.where(report == args['look_for_curr']['tur'])
     if len(curr_find[0]):
         trans = args['trans_tur']
+        dear = args['look_for_client']['tur']
     else:
         curr_find = np.where(report == args['look_for_curr']['eng'])
         trans = args['trans_eng']
+        dear = args['look_for_client']['eng']
     look_for_start = trans['transaction_time']
     ent = None
     for e in entities:
-        e_find = np.where(report == f'Dear {entities[e]}')
+        e_find = np.where(report == f'{dear} {entities[e]}')
         if len(e_find[0]):
             ent = e
             break
