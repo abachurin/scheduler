@@ -54,6 +54,8 @@ def add_report_to_consolidated(args):
             result[e] = result[e].fillna(0)
         else:
             result[e] = pd.DataFrame(columns=args['report_columns'], index=[])
+        result[e]['ref_curr'] = result[e]['ref_curr'].astype(str)
+        result[e]['ref_time'] = result[e]['ref_time'].astype(str)
         result[e]['reference'] = result[e]['ref_curr'] + result[e]['ref_time']
     refs = {e: set(result[e]['reference']) for e in entities}
     client_set = set.union(*[set(result[e]['client']) for e in entities]) - {0}
@@ -74,12 +76,12 @@ def add_report_to_consolidated(args):
         except Exception as ex:
             print(f'failed to process {r}')
             print(ex)
-
     for e in entities:
-        df = pd.DataFrame(to_add[e])
-        df['ref_curr'] = df['reference'].apply(lambda v: v[:-17])
-        df['ref_time'] = df['reference'].apply(lambda v: v[-17:])
-        result[e] = pd.concat([result[e], df], axis=0).sort_values('ref_time')
+        if to_add[e]:
+            df = pd.DataFrame(to_add[e])
+            df['ref_curr'] = df['reference'].astype(str).apply(lambda v: v[:-17])
+            df['ref_time'] = df['reference'].astype(str).apply(lambda v: v[-17:])
+            result[e] = pd.concat([result[e], df], axis=0).sort_values('ref_time')
         result[e].drop('reference', axis=1, inplace=True)
     save_excel_multiple_sheets(result, consolidated_file)
     print(f'consolidated report refreshed at {datetime.now()}')
