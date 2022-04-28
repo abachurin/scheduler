@@ -36,7 +36,7 @@ def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: 
             break
     if not ent:
         find_dear = report.applymap(lambda x: x[:4] if type(x) == str else '')
-        dear_find = np.where(find_dear == 'Dear')
+        dear_find = np.where(find_dear == dear)
         if len(dear_find[0]):
             return None, 'new'
         return None, 'none'
