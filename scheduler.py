@@ -122,7 +122,7 @@ def main(config, pause=10):
 if __name__ == '__main__':
 
     # get configuration
-    with open('config.json', 'r') as f:
+    with open('config.json', 'r', encoding='utf8') as f:
         config = json.load(f)
 
     # if 'excel' is ticked on in config file - try to run MS Excel. Works only under Windows OS
