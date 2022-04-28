@@ -7,6 +7,7 @@ from dateutil import parser
 from multiprocessing import Process
 import pandas as pd
 import numpy as np
+import shutil
 
 
 def save_excel_multiple_sheets(data: dict[pd.DataFrame], name):
@@ -16,33 +17,15 @@ def save_excel_multiple_sheets(data: dict[pd.DataFrame], name):
     writer.save()
 
 
-def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict):
+def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict, args: dict):
     report = report.applymap(lambda x: x.rstrip() if type(x) == str else x)
-    look_for_curr_tl = 'Mevcut Bakiye:'
-    look_for_curr_en = 'Current Balance:'
-    offset_curr = 2
-    curr_find = np.where(report == look_for_curr_tl)
+    curr_find = np.where(report == args['look_for_curr']['tur'])
     if len(curr_find[0]):
-        trans = {
-            'transaction_time': 'Tarih/Saat',
-            'value_date': 'Valör',
-            'sum': 'İşlem Tutarı*',
-            'balance_after': 'Bakiye',
-            'comment': 'Açıklama',
-            'reference': 'Referans'
-        }
-        look_for_start = 'Tarih/Saat'
+        trans = args['trans_tur']
     else:
-        curr_find = np.where(report == look_for_curr_en)
-        trans = {
-            'transaction_time': 'Date/Time',
-            'value_date': 'Value Date',
-            'sum': 'Transaction\nAmount*',
-            'balance_after': 'Balance',
-            'comment': 'Description',
-            'reference': 'Reference'
-        }
-        look_for_start = 'Date/Time'
+        curr_find = np.where(report == args['look_for_curr']['eng'])
+        trans = args['trans_eng']
+    look_for_start = trans['transaction_time']
     ent = None
     for e in entities:
         e_find = np.where(report == f'Dear {entities[e]}')
@@ -55,7 +38,7 @@ def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: 
         if len(dear_find[0]):
             return None, 'new'
         return None, 'none'
-    curr_y, curr_x = curr_find[0][0], curr_find[1][0] + offset_curr
+    curr_y, curr_x = curr_find[0][0], curr_find[1][0] + args['look_for_curr']['horizontal_offset']
     curr = report.iloc[curr_y, curr_x].split()[1]
     start = np.where(report == look_for_start)[0][0]
     start_line = report.iloc[start]

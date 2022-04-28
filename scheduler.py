@@ -36,59 +36,52 @@ def func_3(args):
 
 
 def add_report_to_consolidated(args):
-    directory = args['directory']
+    directory_list = args['directory']
     consolidated_file = args['consolidated_file']
-    memory_file = args['memory']
     entities = args['entities']
 
     # get memory or create empty if doesn't exist yet
-    all_files = [v for v in os.listdir(directory) if not v.startswith('.')]
-    if memory_file not in all_files:
-        content = {
-            'skip_files': [consolidated_file, memory_file]
-        }
-        with open(directory + memory_file, 'w') as f:
-            json.dump(content, f)
-    with open(directory + memory_file, 'r') as f:
-        memory = json.load(f)
+    all_files = []
+    for d in directory_list:
+        all_files += [os.path.join(d, v) for v in os.listdir(d) if not v.startswith('.')]
 
-    if consolidated_file in all_files:
-        result = pd.read_excel(directory + consolidated_file, sheet_name=None)
+    if os.path.exists(consolidated_file):
+        result = pd.read_excel(consolidated_file, sheet_name=None)
     else:
         result = {}
     for e in entities:
         if e in result:
             result[e] = result[e].fillna(0)
         else:
-            result[e] = pd.DataFrame(columns=['transaction_time', 'value_date', 'currency', 'sum',
-                                              'balance_after', 'comment', 'reference', 'client'], index=[])
+            result[e] = pd.DataFrame(columns=args['report_columns'], index=[])
+        result[e]['reference'] = result[e]['ref_curr'] + result[e]['ref_time']
     refs = {e: set(result[e]['reference']) for e in entities}
     client_set = set.union(*[set(result[e]['client']) for e in entities]) - {0}
 
     to_add = {e: [] for e in entities}
-    files_to_add = [v for v in all_files if v not in memory['skip_files']]
     print('adding data from reports:')
-    for r in files_to_add:
+    for r in all_files:
         try:
-            report = pd.read_excel(directory + r).fillna(0)
-            new, entity = process_report(report, refs, client_set, entities)
+            report = pd.read_excel(r).fillna(0)
+            new, entity = process_report(report, refs, client_set, entities, args)
             if entity == 'none':
                 print(f'No entity detected in {r} - please check the file!')
             elif entity == 'new':
                 print(f'New entity detected in {r}! add it to config file and process again')
             else:
                 to_add[entity] += new
-                memory['skip_files'].append(r)
                 print(f'{r} - success, {len(new)} lines')
         except Exception as ex:
             print(f'failed to process {r}')
             print(ex)
 
     for e in entities:
-        result[e] = pd.concat([result[e], pd.DataFrame(to_add[e])], axis=0).sort_values('value_date')
-    save_excel_multiple_sheets(result, directory + consolidated_file)
-    with open(directory + memory_file, 'w') as f:
-        json.dump(memory, f)
+        df = pd.DataFrame(to_add[e])
+        df['ref_curr'] = df['reference'].apply(lambda v: v[:-17])
+        df['ref_time'] = df['reference'].apply(lambda v: v[-17:])
+        result[e] = pd.concat([result[e], df], axis=0).sort_values('ref_time')
+        result[e].drop('reference', axis=1, inplace=True)
+    save_excel_multiple_sheets(result, consolidated_file)
     print(f'consolidated report refreshed at {datetime.now()}')
 
 

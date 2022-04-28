@@ -25,12 +25,34 @@
     "to_print": "Ola!"
   },
   "add_report_to_consolidated": {
-    "directory": "/Users/aleksej/dasha/reports_to_save/",
+    "directory": ["/Users/aleksej/dasha/reports_to_save/"],
     "consolidated_file": "report.xlsx",
-    "memory": "memory.json",
     "entities": {
       "NLMK Turkey": "NLMK TURKEY ÇELİK TİCARET",
       "NLMK Trading": "NLMK TRADİNG SA"
+    },
+    "look_for_curr": {
+      "tur": "Mevcut Bakiye:",
+      "eng": "Current Balance:",
+      "horizontal_offset": 2
+    },
+    "report_columns": ["transaction_time", "value_date", "currency" ,"sum", "balance_after", "comment", "client",
+      "ref_curr", "ref_time"],
+    "trans_tur": {
+      "transaction_time": "Tarih/Saat",
+      "value_date": "Valör",
+      "sum": "İşlem Tutarı*",
+      "balance_after": "Bakiye",
+      "comment": "Açıklama",
+      "reference": "Referans"
+    },
+    "trans_eng": {
+      "transaction_time": "Date/Time",
+      "value_date": "Value Date",
+      "sum": "Transaction\nAmount*",
+      "balance_after": "Balance",
+      "comment": "Description",
+      "reference": "Reference"
     }
   }
 }
