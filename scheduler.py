@@ -87,38 +87,6 @@ def add_report_to_consolidated(args):
     print(f'consolidated report refreshed at {datetime.now()}')
 
 
-def main(config, pause=10):
-    start = config['start_list']
-    regulars = {}
-    for v in start:
-        if start[v][0].startswith('min'):
-            regulars[v] = int(start[v][0][3:])
-
-    # function gets next trigger time for a particular item in start list
-    def get_next_trigger(item):
-        today = str(datetime.now().date())
-        time_now = str(datetime.now().time())[:5]
-        if item in regulars:
-            return datetime.now() + timedelta(minutes=regulars[item])
-        left_today = [t for t in start[item] if t > time_now]
-        if left_today:
-            return parser.parse(f'{today} {min(left_today)}')
-        else:
-            tomorrow = str(datetime.now() + timedelta(days=1))[:10]
-            return parser.parse(f'{tomorrow} {min(start[item])}')
-
-    now = datetime.now()
-    next_trigger = {v: now if v in regulars else get_next_trigger(v) for v in start}
-    while True:
-        now = datetime.now()
-        for v in start:
-            if now > next_trigger[v]:
-                next_trigger[v] = get_next_trigger(v)
-                args = (config.get(v, None),)
-                Process(target=globals()[v], args=args).start()
-        time.sleep(pause)
-
-
 def extract_vb_files_from_mail(args):
     time.sleep(5)
     print('Job 3. Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
@@ -149,6 +117,38 @@ def extract_vb_files_from_mail(args):
         print(f"Job 3: {counter} files processed")
     else:
         print("Job 3: no files")
+
+
+def main(config, pause=10):
+    start = config['start_list']
+    regulars = {}
+    for v in start:
+        if start[v][0].startswith('min'):
+            regulars[v] = int(start[v][0][3:])
+
+    # function gets next trigger time for a particular item in start list
+    def get_next_trigger(item):
+        today = str(datetime.now().date())
+        time_now = str(datetime.now().time())[:5]
+        if item in regulars:
+            return datetime.now() + timedelta(minutes=regulars[item])
+        left_today = [t for t in start[item] if t > time_now]
+        if left_today:
+            return parser.parse(f'{today} {min(left_today)}')
+        else:
+            tomorrow = str(datetime.now() + timedelta(days=1))[:10]
+            return parser.parse(f'{tomorrow} {min(start[item])}')
+
+    now = datetime.now()
+    next_trigger = {v: now if v in regulars else get_next_trigger(v) for v in start}
+    while True:
+        now = datetime.now()
+        for v in start:
+            if now > next_trigger[v]:
+                next_trigger[v] = get_next_trigger(v)
+                args = (config.get(v, None),)
+                Process(target=globals()[v], args=args).start()
+        time.sleep(pause)
 
 
 if __name__ == '__main__':
