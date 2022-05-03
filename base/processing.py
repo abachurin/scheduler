@@ -8,6 +8,10 @@ from multiprocessing import Process
 import pandas as pd
 import numpy as np
 import shutil
+try:
+    import win32com.client as win32
+except Exception as ex:
+    print("No Excel module")
 
 
 def save_excel_multiple_sheets(data: dict[pd.DataFrame], name):
