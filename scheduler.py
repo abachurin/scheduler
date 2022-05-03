@@ -119,23 +119,43 @@ def main(config, pause=10):
         time.sleep(pause)
 
 
+def extract_vb_files_from_mail(args):
+    time.sleep(5)
+    print('Job 3. Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
+
+    target_directory = args["target_directory"]
+    Path(target_directory).mkdir(parents=True, exist_ok=True)
+    inbox = outlook.GetDefaultFolder(6).folders(args["folder"])
+    counter = 0
+    for msg in inbox.Items:
+        ats = msg.Attachments
+        if len(ats) == 1:
+            att = ats.Item(1)
+            f = str(att)
+            f_temp = target_directory + f
+            att.SaveASFile(f_temp)
+            try:
+                df = pd.read_excel(f_temp)
+                curr = df.iloc[2, 1][-3:]
+                date = str(parser.parse(df.columns[7], dayfirst=True))[:10]
+                f_new = f'{target_directory}{f[:-5]}.{curr}.{date}.xlsx'
+                print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
+                shutil.copy(f_temp, f_new)
+                counter += 1
+            except Exception as ex:
+                print(ex)
+            os.remove(f_temp)
+    if counter:
+        print(f"Job 3: {counter} files processed")
+    else:
+        print("Job 3: no files")
+
+
 if __name__ == '__main__':
 
     # get configuration
     with open('config.json', 'r', encoding='utf8') as f:
         config = json.load(f)
-
-    # if 'excel' is ticked on in config file - try to run MS Excel. Works only under Windows OS
-    if config['excel']:
-        try:
-            import win32com.client as win32
-            xl_app = win32.DispatchEx("Excel.Application")
-            print('MS Excel copy running')
-        except Exception as ex:
-            print(ex)
-            print('MS Excel failed to start!')
-    else:
-        xl_app = None
 
     # run the scheduler
     main(config)

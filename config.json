@@ -4,7 +4,7 @@
     "func_1": [
       "20:00"
     ],
-    "func_2": [
+    "extract_vb_files_from_mail": [
       "09:00",
       "18:30"
     ],
@@ -58,5 +58,10 @@
       "comment": "Description",
       "reference": "Reference"
     }
+  },
+  "extract_vb_files_from_mail": {
+    "source_directory": "",
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler",
+    "folder": "ab"
   }
 }

@@ -1,6 +1,6 @@
 from scheduler import *
 
-name = 'add_report_to_consolidated'
+name = 'extract_vb_files_from_mail'
 
 with open('config.json', 'r') as f:
     config = json.load(f)

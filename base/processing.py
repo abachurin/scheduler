@@ -8,13 +8,18 @@ from multiprocessing import Process
 import pandas as pd
 import numpy as np
 import shutil
+from pathlib import Path
 try:
     import win32com.client as win32
+    xl_app = win32.DispatchEx("Excel.Application")
+    outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")
 except Exception as ex:
-    print("No Excel module")
+    print("No Windows module")
+    xl_app = None
+    outlook = None
 
 
-def save_excel_multiple_sheets(data: dict[pd.DataFrame], name):
+def save_excel_multiple_sheets(data: dict, name):
     writer = pd.ExcelWriter(name)
     for key in data:
         data[key].to_excel(writer, key, index=False)
