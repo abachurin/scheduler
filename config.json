@@ -62,6 +62,7 @@
   "extract_vb_files_from_mail": {
     "source_directory": "",
     "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler",
-    "folder": "ab"
+    "folder": "ab",
+    "memory_file": "memory_vb.json"
   }
 }

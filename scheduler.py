@@ -90,8 +90,13 @@ def add_report_to_consolidated(args):
 def extract_vb_files_from_mail(args):
     time.sleep(5)
     print('Job 3. Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
-
     target_directory = args["target_directory"]
+    memory_file = args["memory_file"]
+    try:
+        with open(memory_file, "r") as f:
+            memory = json.load(f)
+    except Exception:
+        memory = []
     Path(target_directory).mkdir(parents=True, exist_ok=True)
     inbox = outlook.GetDefaultFolder(6).folders(args["folder"])
     counter = 0
@@ -100,19 +105,23 @@ def extract_vb_files_from_mail(args):
         if len(ats) == 1:
             att = ats.Item(1)
             f = str(att)
-            f_temp = target_directory + f
+            f_temp = os.path.join(working_directory, "temp.xlsx")
             att.SaveASFile(f_temp)
             try:
                 df = pd.read_excel(f_temp)
                 curr = df.iloc[2, 1][-3:]
                 date = str(parser.parse(df.columns[7], dayfirst=True))[:10]
                 f_new = f'{target_directory}{f[:-5]}.{curr}.{date}.xlsx'
-                print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
-                shutil.copy(f_temp, f_new)
-                counter += 1
+                if f_new not in memory:
+                    print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
+                    shutil.copy(f_temp, f_new)
+                    memory.append(f_new)
+                    counter += 1
             except Exception as ex:
                 print(ex)
             os.remove(f_temp)
+    with open(memory_file, "w") as f:
+        json.dump(memory, f)
     if counter:
         print(f"Job 3: {counter} files processed")
     else:

@@ -17,6 +17,7 @@ except Exception as ex:
     print("No Windows module")
     xl_app = None
     outlook = None
+working_directory = os.path.dirname(os.path.realpath(__file__))
 
 
 def save_excel_multiple_sheets(data: dict, name):
