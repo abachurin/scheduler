@@ -110,14 +110,15 @@ def extract_vb_files_from_mail(args):
                 df = pd.read_excel(f_temp)
                 curr = df.iloc[2, 1][-3:]
                 date = str(parser.parse(df.columns[7], dayfirst=True))[:10]
-                f_new = f'{target_directory}{str(att)[:-5]}.{curr}.{date}.xlsx'
+                f_new = f'{str(att)[:-5]}.{curr}.{date}.xlsx'
+                f_new_full_path = f'{target_directory}{str(att)[:-5]}.{curr}.{date}.xlsx'
                 if f_new not in memory:
                     print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
-                    shutil.copy(f_temp, f_new)
+                    shutil.copy(f_temp, f_new_full_path)
                     memory.append(f_new)
                     counter += 1
             except Exception as ex:
-                print(ex)
+                print(f'{ex} : file {str(att)}')
             os.remove(f_temp)
     with open(memory_file, "w") as f:
         json.dump(memory, f)
