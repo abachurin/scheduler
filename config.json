@@ -41,7 +41,7 @@
       "eng": "Dear"
     },
     "report_columns": ["transaction_time", "value_date", "currency" ,"sum", "balance_after", "comment", "client",
-      "ref_curr", "ref_time"],
+      "ref_curr", "ref_time", "type"],
     "trans_tur": {
       "transaction_time": "Tarih/Saat",
       "value_date": "Valör",
@@ -60,7 +60,6 @@
     }
   },
   "extract_vb_files_from_mail": {
-    "source_directory": "",
     "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler",
     "folder": "ab",
     "memory_file": "memory_vb.json"
