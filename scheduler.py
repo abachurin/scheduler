@@ -40,7 +40,6 @@ def add_report_to_consolidated(args):
     consolidated_file = args['consolidated_file']
     entities = args['entities']
 
-    # get memory or create empty if doesn't exist yet
     all_files = []
     for d in directory_list:
         all_files += [os.path.join(d, v) for v in os.listdir(d) if not v.startswith('.')]
@@ -84,11 +83,52 @@ def add_report_to_consolidated(args):
             result[e] = pd.concat([result[e], df], axis=0).sort_values('ref_time')
         result[e].drop('reference', axis=1, inplace=True)
     save_excel_multiple_sheets(result, consolidated_file)
-    print(f'consolidated report refreshed at {datetime.now()}')
+    print(f'consolidated Izbank report refreshed at {datetime.now()}')
+
+
+def vb_consolidated(args, new_files):
+    consolidated_file = args['consolidated_file']
+    entities = args['entities']
+
+    if os.path.exists(consolidated_file):
+        result = pd.read_excel(consolidated_file, sheet_name=None)
+    else:
+        result = {}
+    for e in entities:
+        if e in result:
+            result[e] = result[e].fillna(0)
+        else:
+            result[e] = pd.DataFrame(columns=args['report_columns'], index=[])
+        result[e]['reference'] = result[e]['reference'].astype(str)
+    refs = {e: set(result[e]['reference']) for e in entities}
+    client_set = set.union(*[set(result[e]['client']) for e in entities]) - {0}
+
+    to_add = {e: [] for e in entities}
+    print('adding data from reports:')
+    for r in new_files:
+        try:
+            report = pd.read_excel(r).fillna(0)
+            new, entity = vb_process_report(report, refs, client_set, entities, args)
+            if entity == 'none':
+                print(f'No entity detected in {r} - please check the file!')
+            elif entity == 'new':
+                print(f'New entity detected in {r}! add it to config file and process again')
+            else:
+                to_add[entity] += new
+                print(f'{r} - success, {len(new)} lines')
+        except Exception as ex:
+            print(f'failed to process {r}')
+            print(ex)
+    for e in entities:
+        if to_add[e]:
+            df = pd.DataFrame(to_add[e])
+            result[e] = pd.concat([result[e], df], axis=0).sort_values('reference')
+    save_excel_multiple_sheets(result, consolidated_file)
+    print(f'consolidated Vakifbank report refreshed at {datetime.now()}')
+    pass
 
 
 def extract_vb_files_from_mail(args):
-    time.sleep(5)
     print('Job 3. Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
     target_directory = args["target_directory"]
     memory_file = args["memory_file"]
@@ -99,7 +139,7 @@ def extract_vb_files_from_mail(args):
         memory = []
     Path(target_directory).mkdir(parents=True, exist_ok=True)
     inbox = outlook.GetDefaultFolder(6).folders(args["folder"])
-    counter = 0
+    new_files = []
     for msg in inbox.Items:
         ats = msg.Attachments
         if len(ats) == 1:
@@ -108,7 +148,7 @@ def extract_vb_files_from_mail(args):
             att.SaveASFile(f_temp)
             try:
                 df = pd.read_excel(f_temp)
-                curr = df.iloc[2, 1][-3:]
+                curr = df.iloc[2, 1].split()[1]
                 date = str(parser.parse(df.columns[7], dayfirst=True))[:10]
                 f_new = f'{str(att)[:-5]}.{curr}.{date}.xlsx'
                 f_new_full_path = f'{target_directory}{str(att)[:-5]}.{curr}.{date}.xlsx'
@@ -116,14 +156,15 @@ def extract_vb_files_from_mail(args):
                     print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
                     shutil.copy(f_temp, f_new_full_path)
                     memory.append(f_new)
-                    counter += 1
+                    new_files.append(f_new_full_path)
             except Exception as ex:
                 print(f'{ex} : file {str(att)}')
             os.remove(f_temp)
     with open(memory_file, "w") as f:
         json.dump(memory, f)
-    if counter:
-        print(f"Job 3: {counter} files processed")
+    if new_files:
+        print(f"Job 3: {len(new_files)} files extracted, now processing")
+        vb_consolidated(args, new_files)
     else:
         print("Job 3: no files")
 

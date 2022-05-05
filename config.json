@@ -60,8 +60,49 @@
     }
   },
   "extract_vb_files_from_mail": {
-    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler",
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
     "folder": "ab",
-    "memory_file": "memory_vb.json"
+    "memory_file": "memory_vb.json",
+    "consolidated_file": "vb_report.xlsx",
+    "entities": {
+      "NLMK Turkey": "NLMK TURKEY ÇELİK TİCARET ANONİM ŞİRKETİ",
+      "NLMK Trading": "Need to fill!"
+    },
+    "look_for_curr": {
+      "tur": "HESAP TÜRÜ",
+      "eng": "Need to fill!",
+      "horizontal_offset": 1
+    },
+    "look_for_client": {
+      "tur": "HESAP SAHİBİ",
+      "eng": "Need to fill!"
+    },
+    "report_columns": [
+      "transaction_time",
+      "value_date",
+      "currency",
+      "sum",
+      "balance_after",
+      "reference",
+      "comment",
+      "client",
+      "type"
+    ],
+    "trans_tur": {
+      "transaction_time": "HAREKET TARIH",
+      "value_date": "İŞLEM TARİHİ",
+      "sum": "TUTAR",
+      "balance_after": "BAKİYE",
+      "comment": "AAÇIKLAMA",
+      "reference": "İŞLEM NO"
+    },
+    "trans_eng": {
+      "transaction_time": "Need to fill!",
+      "value_date": "Need to fill!",
+      "sum": "Need to fill!",
+      "balance_after": "Need to fill!",
+      "comment": "Need to fill!",
+      "reference": "Need to fill!"
+    }
   }
 }

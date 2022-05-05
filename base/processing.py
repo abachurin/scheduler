@@ -70,9 +70,64 @@ def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: 
         line['currency'] = curr
         line['value_date'] = str(datetime.strptime(line['value_date'], '%d/%m/%Y'))[:10]
         line['client'] = 0
+        line["type"] = 0
         for cl in client_set:
             if cl in line['comment']:
                 line['client'] = cl
+                line["type"] = "client"
+                break
+        res.append(line)
+
+    return res, ent
+
+
+def vb_process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict, args: dict):
+    report = report.applymap(lambda x: x.rstrip() if type(x) == str else x)
+    curr_find = np.where(report == args['look_for_curr']['tur'])
+    if len(curr_find[0]):
+        trans = args['trans_tur']
+        dear = args['look_for_client']['tur']
+    else:
+        curr_find = np.where(report == args['look_for_curr']['eng'])
+        trans = args['trans_eng']
+        dear = args['look_for_client']['eng']
+    look_for_start = trans['transaction_time']
+    ent = None
+    for e in entities:
+        e_find = np.where(report == entities[e])
+        if len(e_find[0]):
+            ent = e
+            break
+    if not ent:
+        dear_find = np.where(report == dear)
+        if len(dear_find[0]):
+            return None, 'new'
+        return None, 'none'
+    curr_y, curr_x = curr_find[0][0], curr_find[1][0] + args['look_for_curr']['horizontal_offset']
+    curr = report.iloc[curr_y, curr_x].split()[1]
+    start = np.where(report == look_for_start)[0][0]
+    start_line = report.iloc[start]
+    cols = {}
+    for c in trans:
+        cols[c] = np.where(start_line == trans[c])[0][0]
+
+    res = []
+    while True:
+        start += 1
+        line = {c: report.iloc[start, cols[c]] for c in trans}
+        if not line['transaction_time']:
+            break
+        if line['reference'] in refs[ent]:
+            print(f"double reference {line['reference']}")
+        refs[ent].add(line['reference'])
+        line['currency'] = curr
+        line['value_date'] = str(parser.parse(line['value_date']))[:10]
+        line['client'] = 0
+        line["type"] = 0
+        for cl in client_set:
+            if cl in line['comment']:
+                line['client'] = cl
+                line["type"] = "client"
                 break
         res.append(line)
 
