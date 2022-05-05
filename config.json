@@ -73,10 +73,6 @@
       "eng": "Need to fill!",
       "horizontal_offset": 1
     },
-    "look_for_client": {
-      "tur": "HESAP SAHİBİ",
-      "eng": "Need to fill!"
-    },
     "report_columns": [
       "transaction_time",
       "value_date",
@@ -93,7 +89,7 @@
       "value_date": "İŞLEM TARİHİ",
       "sum": "TUTAR",
       "balance_after": "BAKİYE",
-      "comment": "AAÇIKLAMA",
+      "comment": "AÇIKLAMA",
       "reference": "İŞLEM NO"
     },
     "trans_eng": {

@@ -86,23 +86,18 @@ def vb_process_report(report: pd.DataFrame, refs: dict, client_set: set, entitie
     curr_find = np.where(report == args['look_for_curr']['tur'])
     if len(curr_find[0]):
         trans = args['trans_tur']
-        dear = args['look_for_client']['tur']
     else:
         curr_find = np.where(report == args['look_for_curr']['eng'])
         trans = args['trans_eng']
-        dear = args['look_for_client']['eng']
     look_for_start = trans['transaction_time']
     ent = None
+    ent_rep = report.columns[1]
     for e in entities:
-        e_find = np.where(report == entities[e])
-        if len(e_find[0]):
+        if ent_rep == entities[e]:
             ent = e
             break
-    if not ent:
-        dear_find = np.where(report == dear)
-        if len(dear_find[0]):
-            return None, 'new'
-        return None, 'none'
+    if ent is None:
+        return None, 'new'
     curr_y, curr_x = curr_find[0][0], curr_find[1][0] + args['look_for_curr']['horizontal_offset']
     curr = report.iloc[curr_y, curr_x].split()[1]
     start = np.where(report == look_for_start)[0][0]

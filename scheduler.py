@@ -133,7 +133,7 @@ def extract_vb_files_from_mail(args):
     target_directory = args["target_directory"]
     memory_file = args["memory_file"]
     try:
-        with open(memory_file, "r") as f:
+        with open(memory_file, "r", encoding='utf-8') as f:
             memory = json.load(f)
     except Exception:
         memory = []
@@ -160,7 +160,7 @@ def extract_vb_files_from_mail(args):
             except Exception as ex:
                 print(f'{ex} : file {str(att)}')
             os.remove(f_temp)
-    with open(memory_file, "w") as f:
+    with open(memory_file, "w", encoding='utf-8') as f:
         json.dump(memory, f)
     if new_files:
         print(f"Job 3: {len(new_files)} files extracted, now processing")
@@ -204,7 +204,7 @@ def main(config, pause=10):
 if __name__ == '__main__':
 
     # get configuration
-    with open('config.json', 'r', encoding='utf8') as f:
+    with open('config.json', 'r', encoding='utf-8') as f:
         config = json.load(f)
 
     # run the scheduler
