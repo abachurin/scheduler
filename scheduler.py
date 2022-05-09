@@ -35,14 +35,9 @@ def func_3(args):
     print(args['to_print'])
 
 
-def add_report_to_consolidated(args):
-    directory_list = args['directory']
+def iz_consolidated(args, new_files):
     consolidated_file = args['consolidated_file']
     entities = args['entities']
-
-    all_files = []
-    for d in directory_list:
-        all_files += [os.path.join(d, v) for v in os.listdir(d) if not v.startswith('.')]
 
     if os.path.exists(consolidated_file):
         result = pd.read_excel(consolidated_file, sheet_name=None)
@@ -61,10 +56,10 @@ def add_report_to_consolidated(args):
 
     to_add = {e: [] for e in entities}
     print('adding data from reports:')
-    for r in all_files:
+    for r in new_files:
         try:
             report = pd.read_excel(r).fillna(0)
-            new, entity = process_report(report, refs, client_set, entities, args)
+            new, entity, refs = iz_process_report(report, refs, client_set, entities, args)
             if entity == 'none':
                 print(f'No entity detected in {r} - please check the file!')
             elif entity == 'new':
@@ -108,7 +103,7 @@ def vb_consolidated(args, new_files):
     for r in new_files:
         try:
             report = pd.read_excel(r).fillna(0)
-            new, entity = vb_process_report(report, refs, client_set, entities, args)
+            new, entity, refs = vb_process_report(report, refs, client_set, entities, args)
             if entity == 'none':
                 print(f'No entity detected in {r} - please check the file!')
             elif entity == 'new':
@@ -167,6 +162,39 @@ def extract_vb_files_from_mail(args):
         vb_consolidated(args, new_files)
     else:
         print("Job 3: no files")
+
+
+def extract_iz_files_from_mail(args):
+    print('Process of copying IZ reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
+    target_directory = args["target_directory"]
+    memory_file = args["memory_file"]
+    try:
+        with open(memory_file, "r", encoding='utf-8') as f:
+            memory = json.load(f)
+    except Exception:
+        memory = []
+    Path(target_directory).mkdir(parents=True, exist_ok=True)
+    inbox = outlook.GetDefaultFolder(6).folders(args["folder"])
+    new_files = []
+    for msg in inbox.Items:
+        ats = msg.Attachments
+        if len(ats) == 1:
+            att = ats.Item(1)
+            f_name = str(att)
+            if (f_name[-5:] != ".xlsx" and f_name[-4:] != ".xls") or f_name in memory:
+                continue
+            memory.append(f_name)
+            print(f'got new file {f_name}')
+            f_new_full_path = f'{target_directory}{f_name}'
+            att.SaveASFile(f_new_full_path)
+            new_files.append(f_new_full_path)
+    with open(memory_file, "w", encoding='utf-8') as f:
+        json.dump(memory, f)
+    if new_files:
+        print(f"IZ bank: {len(new_files)} files extracted, now processing")
+        iz_consolidated(args, new_files)
+    else:
+        print("IZ bank: no files")
 
 
 def main(config, pause=10):

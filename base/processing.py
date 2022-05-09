@@ -27,7 +27,7 @@ def save_excel_multiple_sheets(data: dict, name):
     writer.save()
 
 
-def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict, args: dict):
+def iz_process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict, args: dict):
     report = report.applymap(lambda x: x.rstrip() if type(x) == str else x)
     curr_find = np.where(report == args['look_for_curr']['tur'])
     if len(curr_find[0]):
@@ -78,7 +78,7 @@ def process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: 
                 break
         res.append(line)
 
-    return res, ent
+    return res, ent, refs
 
 
 def vb_process_report(report: pd.DataFrame, refs: dict, client_set: set, entities: dict, args: dict):
@@ -126,4 +126,4 @@ def vb_process_report(report: pd.DataFrame, refs: dict, client_set: set, entitie
                 break
         res.append(line)
 
-    return res, ent
+    return res, ent, refs

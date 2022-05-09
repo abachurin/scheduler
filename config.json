@@ -11,7 +11,7 @@
     "func_3": [
       "20:00"
     ],
-    "add_report_to_consolidated": [
+    "extract_iz_files_from_mail": [
       "min 15"
     ]
   },
@@ -24,9 +24,11 @@
   "func_3": {
     "to_print": "Ola!"
   },
-  "add_report_to_consolidated": {
-    "directory": ["/Users/aleksej/dasha/reports_to_save/"],
-    "consolidated_file": "report.xlsx",
+  "extract_iz_files_from_mail": {
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+    "folder": "ab_iz",
+    "memory_file": "memory_iz.json",
+    "consolidated_file": "iz_report.xlsx",
     "entities": {
       "NLMK Turkey": "NLMK TURKEY ÇELİK TİCARET",
       "NLMK Trading": "NLMK TRADİNG SA"
