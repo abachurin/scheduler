@@ -227,13 +227,3 @@ def main(config, pause=10):
                 args = (config.get(v, None),)
                 Process(target=globals()[v], args=args).start()
         time.sleep(pause)
-
-
-if __name__ == '__main__':
-
-    # get configuration
-    with open('config.json', 'r', encoding='utf-8') as f:
-        config = json.load(f)
-
-    # run the scheduler
-    main(config)

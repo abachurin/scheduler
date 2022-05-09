@@ -9,14 +9,10 @@ import pandas as pd
 import numpy as np
 import shutil
 from pathlib import Path
-try:
-    import win32com.client as win32
-    xl_app = win32.DispatchEx("Excel.Application")
-    outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")
-except Exception as ex:
-    print("No Windows module")
-    xl_app = None
-    outlook = None
+
+xl_app = None
+outlook = None
+
 working_directory = os.path.dirname(os.path.realpath(__file__))
 
 

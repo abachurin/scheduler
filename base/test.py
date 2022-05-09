@@ -1,4 +1,4 @@
-from scheduler import *
+from .scheduler import *
 
 name = 'extract_iz_files_from_mail'
 
