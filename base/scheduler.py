@@ -170,7 +170,7 @@ def extract_vb_files_from_mail(args):
         ats = msg.Attachments
         if len(ats) == 1:
             att = ats.Item(1)
-            f_temp = os.path.join(working_directory, "temp.xlsx")
+            f_temp = os.path.join(working_directory, f"temp{str(np.random.randint(100000))}.xlsx")
             att.SaveASFile(f_temp)
             try:
                 df = pd.read_excel(f_temp)

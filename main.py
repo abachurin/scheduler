@@ -8,5 +8,4 @@ if __name__ == '__main__':
         config = json.load(f)
 
     # run the scheduler
-    print(1)
     main(config)

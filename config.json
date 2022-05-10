@@ -5,20 +5,19 @@
       "20:00"
     ],
     "extract_vb_files_from_mail": [
-      "09:00",
-      "18:30"
+      "min 10"
     ],
     "vb_consolidated": [
-      "min 17"
+      "19:00"
     ],
     "func_3": [
       "20:00"
     ],
     "extract_iz_files_from_mail": [
-      "min 15"
+      "19:10"
     ],
     "iz_consolidated": [
-      "min 18"
+      "19:30"
     ]
   },
   "func_1": {
