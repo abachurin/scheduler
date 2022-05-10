@@ -117,7 +117,7 @@ def vb_process_report(report: pd.DataFrame, refs: dict, client_set: set, entitie
             print(f"double reference {line['reference']}")
         refs[ent].add(line['reference'])
         line['currency'] = curr
-        line['value_date'] = str(parser.parse(line['value_date']))[:10]
+        line['value_date'] = str(datetime.strptime(line['value_date'], '%d.%m.%Y'))[:10]
         line['client'] = 0
         line["type"] = 0
         for cl in client_set:

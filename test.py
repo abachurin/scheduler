@@ -7,7 +7,7 @@ try:
 except Exception as ex:
     print("No Windows module")
 
-names = ['extract_iz_files_from_mail', 'iz_consolidated']
+names = ['iz_consolidated']
 
 with open('config.json', 'r', encoding='utf-8') as f:
     config = json.load(f)
