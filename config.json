@@ -79,7 +79,7 @@
   "extract_iz_files_from_mail": {
     "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
     "folder": "ab_iz",
-    "memory_file": "memory_iz.json"
+    "memory_file": "memory_iz_mail.json"
   },
   "iz_consolidated": {
     "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
