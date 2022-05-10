@@ -1,3 +1,5 @@
+import os
+
 from base.processing import *
 
 
@@ -35,14 +37,25 @@ def func_3(args):
     print(args['to_print'])
 
 
-def iz_consolidated(args, new_files):
+def iz_consolidated(args):
+    target_directory = args["target_directory"]
+    Path(target_directory).mkdir(parents=True, exist_ok=True)
     consolidated_file = args['consolidated_file']
-    entities = args['entities']
-
+    memory_file = args["memory_file"]
+    try:
+        with open(memory_file, "r", encoding='utf-8') as f:
+            memory = json.load(f)
+    except Exception:
+        memory = []
+    new_files = [v for v in os.listdir(target_directory) if (not v.startswith('.') and v not in memory)]
+    if not new_files:
+        print(f'No files to process in {target_directory}')
+        return
     if os.path.exists(consolidated_file):
         result = pd.read_excel(consolidated_file, sheet_name=None)
     else:
         result = {}
+    entities = args['entities']
     for e in entities:
         if e in result:
             result[e] = result[e].fillna(0)
@@ -81,14 +94,25 @@ def iz_consolidated(args, new_files):
     print(f'consolidated Izbank report refreshed at {datetime.now()}')
 
 
-def vb_consolidated(args, new_files):
+def vb_consolidated(args):
+    target_directory = args["target_directory"]
+    Path(target_directory).mkdir(parents=True, exist_ok=True)
     consolidated_file = args['consolidated_file']
-    entities = args['entities']
-
+    memory_file = args["memory_file"]
+    try:
+        with open(memory_file, "r", encoding='utf-8') as f:
+            memory = json.load(f)
+    except Exception:
+        memory = []
+    new_files = [v for v in os.listdir(target_directory) if (not v.startswith('.') and v not in memory)]
+    if not new_files:
+        print(f'No files to process in {target_directory}')
+        return
     if os.path.exists(consolidated_file):
         result = pd.read_excel(consolidated_file, sheet_name=None)
     else:
         result = {}
+    entities = args['entities']
     for e in entities:
         if e in result:
             result[e] = result[e].fillna(0)
@@ -120,11 +144,10 @@ def vb_consolidated(args, new_files):
             result[e] = pd.concat([result[e], df], axis=0).sort_values('reference')
     save_excel_multiple_sheets(result, consolidated_file)
     print(f'consolidated Vakifbank report refreshed at {datetime.now()}')
-    pass
 
 
 def extract_vb_files_from_mail(args):
-    print('Job 3. Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
+    print('Process of copying VB reports started', str(datetime.now().date()), str(datetime.now().time())[:5])
     target_directory = args["target_directory"]
     memory_file = args["memory_file"]
     try:
@@ -148,7 +171,7 @@ def extract_vb_files_from_mail(args):
                 f_new = f'{str(att)[:-5]}.{curr}.{date}.xlsx'
                 f_new_full_path = f'{target_directory}{str(att)[:-5]}.{curr}.{date}.xlsx'
                 if f_new not in memory:
-                    print(f'Job 3. got new file with currency = {curr}, date = {date}, result file={f_new}')
+                    print(f'got new file with currency = {curr}, date = {date}, result file={f_new}')
                     shutil.copy(f_temp, f_new_full_path)
                     memory.append(f_new)
                     new_files.append(f_new_full_path)
@@ -158,10 +181,9 @@ def extract_vb_files_from_mail(args):
     with open(memory_file, "w", encoding='utf-8') as f:
         json.dump(memory, f)
     if new_files:
-        print(f"Job 3: {len(new_files)} files extracted, now processing")
-        vb_consolidated(args, new_files)
+        print(f"VB Bank: {len(new_files)} files extracted")
     else:
-        print("Job 3: no files")
+        print("VB Bank: no files")
 
 
 def extract_iz_files_from_mail(args):
@@ -192,7 +214,6 @@ def extract_iz_files_from_mail(args):
         json.dump(memory, f)
     if new_files:
         print(f"IZ bank: {len(new_files)} files extracted, now processing")
-        iz_consolidated(args, new_files)
     else:
         print("IZ bank: no files")
 

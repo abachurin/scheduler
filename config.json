@@ -8,11 +8,17 @@
       "09:00",
       "18:30"
     ],
+    "vb_consolidated": [
+      "min 17"
+    ],
     "func_3": [
       "20:00"
     ],
     "extract_iz_files_from_mail": [
       "min 15"
+    ],
+    "iz_consolidated": [
+      "min 18"
     ]
   },
   "func_1": {
@@ -24,46 +30,13 @@
   "func_3": {
     "to_print": "Ola!"
   },
-  "extract_iz_files_from_mail": {
-    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
-    "folder": "ab_iz",
-    "memory_file": "memory_iz.json",
-    "consolidated_file": "iz_report.xlsx",
-    "entities": {
-      "NLMK Turkey": "NLMK TURKEY ÇELİK TİCARET",
-      "NLMK Trading": "NLMK TRADİNG SA"
-    },
-    "look_for_curr": {
-      "tur": "Mevcut Bakiye:",
-      "eng": "Current Balance:",
-      "horizontal_offset": 2
-    },
-    "look_for_client": {
-      "tur": "Sayın",
-      "eng": "Dear"
-    },
-    "report_columns": ["transaction_time", "value_date", "currency" ,"sum", "balance_after", "comment", "client",
-      "ref_curr", "ref_time", "type"],
-    "trans_tur": {
-      "transaction_time": "Tarih/Saat",
-      "value_date": "Valör",
-      "sum": "İşlem Tutarı*",
-      "balance_after": "Bakiye",
-      "comment": "Açıklama",
-      "reference": "Referans"
-    },
-    "trans_eng": {
-      "transaction_time": "Date/Time",
-      "value_date": "Value Date",
-      "sum": "Transaction\nAmount*",
-      "balance_after": "Balance",
-      "comment": "Description",
-      "reference": "Reference"
-    }
-  },
   "extract_vb_files_from_mail": {
     "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
     "folder": "ab",
+    "memory_file": "memory_vb_mail.json"
+  },
+  "vb_consolidated": {
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
     "memory_file": "memory_vb.json",
     "consolidated_file": "vb_report.xlsx",
     "entities": {
@@ -101,6 +74,47 @@
       "balance_after": "Need to fill!",
       "comment": "Need to fill!",
       "reference": "Need to fill!"
+    }
+  },
+  "extract_iz_files_from_mail": {
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+    "folder": "ab_iz",
+    "memory_file": "memory_iz.json"
+  },
+  "iz_consolidated": {
+    "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+    "memory_file": "memory_iz.json",
+    "consolidated_file": "iz_report.xlsx",
+    "entities": {
+      "NLMK Turkey": "NLMK TURKEY ÇELİK TİCARET",
+      "NLMK Trading": "NLMK TRADİNG SA"
+    },
+    "look_for_curr": {
+      "tur": "Mevcut Bakiye:",
+      "eng": "Current Balance:",
+      "horizontal_offset": 2
+    },
+    "look_for_client": {
+      "tur": "Sayın",
+      "eng": "Dear"
+    },
+    "report_columns": ["transaction_time", "value_date", "currency" ,"sum", "balance_after", "comment", "client",
+      "ref_curr", "ref_time", "type"],
+    "trans_tur": {
+      "transaction_time": "Tarih/Saat",
+      "value_date": "Valör",
+      "sum": "İşlem Tutarı*",
+      "balance_after": "Bakiye",
+      "comment": "Açıklama",
+      "reference": "Referans"
+    },
+    "trans_eng": {
+      "transaction_time": "Date/Time",
+      "value_date": "Value Date",
+      "sum": "Transaction\nAmount*",
+      "balance_after": "Balance",
+      "comment": "Description",
+      "reference": "Reference"
     }
   }
 }
