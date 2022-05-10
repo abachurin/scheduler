@@ -91,6 +91,9 @@ def iz_consolidated(args):
             result[e] = pd.concat([result[e], df], axis=0).sort_values('ref_time')
         result[e].drop('reference', axis=1, inplace=True)
     save_excel_multiple_sheets(result, consolidated_file)
+    memory += new_files
+    with open(memory_file, "w", encoding='utf-8') as f:
+        json.dump(memory, f)
     print(f'consolidated Izbank report refreshed at {datetime.now()}')
 
 
@@ -143,6 +146,9 @@ def vb_consolidated(args):
             df = pd.DataFrame(to_add[e])
             result[e] = pd.concat([result[e], df], axis=0).sort_values('reference')
     save_excel_multiple_sheets(result, consolidated_file)
+    memory += new_files
+    with open(memory_file, "w", encoding='utf-8') as f:
+        json.dump(memory, f)
     print(f'consolidated Vakifbank report refreshed at {datetime.now()}')
 
 
