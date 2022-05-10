@@ -2,7 +2,6 @@ from base.scheduler import *
 
 try:
     import win32com.client as win32
-
     xl_app = win32.DispatchEx("Excel.Application")
     outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")
 except Exception as ex:
