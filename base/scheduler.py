@@ -47,7 +47,8 @@ def iz_consolidated(args):
             memory = json.load(f)
     except Exception:
         memory = []
-    new_files = [v for v in os.listdir(target_directory) if (not v.startswith('.') and v not in memory)]
+    new_files = [v for v in os.listdir(target_directory) if not v.startswith('.')]
+    new_files = [v for v in new_files if v not in memory]
     if not new_files:
         print(f'No files to process in {target_directory}')
         return
@@ -107,7 +108,8 @@ def vb_consolidated(args):
             memory = json.load(f)
     except Exception:
         memory = []
-    new_files = [v for v in os.listdir(target_directory) if (not v.startswith('.') and v not in memory)]
+    new_files = [v for v in os.listdir(target_directory) if not v.startswith('.')]
+    new_files = [v for v in new_files if v not in memory]
     if not new_files:
         print(f'No files to process in {target_directory}')
         return
