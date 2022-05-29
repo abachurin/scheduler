@@ -1,5 +1,3 @@
-import os
-
 from base.processing import *
 
 
@@ -253,6 +251,10 @@ def main(config, pause=10):
         for v in start:
             if now > next_trigger[v]:
                 next_trigger[v] = get_next_trigger(v)
-                args = (config.get(v, None),)
-                Process(target=globals()[v], args=args).start()
+                if v in config:
+                    args = config[v].get('args', None)
+                else:
+                    args = None
+                pprint(args)
+                Process(target=globals()[v], args=(args,)).start()
         time.sleep(pause)
