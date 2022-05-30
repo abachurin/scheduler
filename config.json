@@ -1,1 +1,155 @@
-{"help_message": "To run with current parameters:\npython3 runner.py --func [name of function]\nAll parameters can be changed in config.json file\nMost important parameters can be changed by adding --[name of parameter] [value of parameter]\nTo get the list of command line parameters for a particular function:\npython3 runner.py -h --func [name of function]\nIf function parameters are supplied, the config for this function is overwritten with new values\nTo suppress this behavior, use -n flag", "start_list": {"func_1": ["20:00"], "extract_vb_files_from_mail": ["min 10"], "vb_consolidated": ["19:00"], "func_3": ["20:00"], "extract_iz_files_from_mail": ["19:10"], "iz_consolidated": ["19:30"]}, "func_1": {"args": {"path": "my_excel_file.xlsx"}}, "func_2": {"path": "another_excel_file.xlsx"}, "func_3": {"description": "Just primt a message", "commands": {"to_print": "a message to be printed"}, "args": {"to_print": "Hey there!"}}, "extract_vb_files_from_mail": {"description": "Extracts Vakifbank report excel files from an Outlook folder,\ngives them a proper name and stores in a dedicated directory", "commands": {"target_directory": "Destinastion folder for storing report files", "folder": "Outlook folder to look for new reports"}, "args": {"target_directory": null, "folder": null, "memory_file": "memory_iz_mail.json"}}, "vb_consolidated": {"args": {"target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\", "memory_file": "memory_vb.json", "consolidated_file": "vb_report.xlsx", "entities": {"NLMK Turkey": "NLMK TURKEY \u00c7EL\u0130K T\u0130CARET ANON\u0130M \u015e\u0130RKET\u0130", "NLMK Trading": "NLMK Trading SA"}, "look_for_curr": {"tur": "HESAP T\u00dcR\u00dc", "eng": "Need to fill!", "horizontal_offset": 1}, "report_columns": ["transaction_time", "value_date", "currency", "sum", "balance_after", "reference", "comment", "client", "type"], "trans_tur": {"transaction_time": "HAREKET TARIH", "value_date": "\u0130\u015eLEM TAR\u0130H\u0130", "sum": "TUTAR", "balance_after": "BAK\u0130YE", "comment": "A\u00c7IKLAMA", "reference": "\u0130\u015eLEM NO"}, "trans_eng": {"transaction_time": "Need to fill!", "value_date": "Need to fill!", "sum": "Need to fill!", "balance_after": "Need to fill!", "comment": "Need to fill!", "reference": "Need to fill!"}}}, "extract_iz_files_from_mail": {"description": "Extracts excel Vakifbank report files from an Outlook folder,\ngives them a proper name and stores in a dedicated directory", "commands": {"target_directory": "Destinastion folder for storing report files", "folder": "Outlook folder to look for new reports"}, "args": {"target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\", "folder": "ab_iz", "memory_file": "memory_iz_mail.json"}}, "iz_consolidated": {"args": {"target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\", "memory_file": "memory_iz.json", "consolidated_file": "iz_report.xlsx", "entities": {"NLMK Turkey": "NLMK TURKEY \u00c7EL\u0130K T\u0130CARET", "NLMK Trading": "NLMK TRAD\u0130NG SA"}, "look_for_curr": {"tur": "Mevcut Bakiye:", "eng": "Current Balance:", "horizontal_offset": 2}, "look_for_client": {"tur": "Say\u0131n", "eng": "Dear"}, "report_columns": ["transaction_time", "value_date", "currency", "sum", "balance_after", "comment", "client", "ref_curr", "ref_time", "type"], "trans_tur": {"transaction_time": "Tarih/Saat", "value_date": "Val\u00f6r", "sum": "\u0130\u015flem Tutar\u0131*", "balance_after": "Bakiye", "comment": "A\u00e7\u0131klama", "reference": "Referans"}, "trans_eng": {"transaction_time": "Date/Time", "value_date": "Value Date", "sum": "Transaction\nAmount*", "balance_after": "Balance", "comment": "Description", "reference": "Reference"}}}}
+{
+    "help_message": "To run with current parameters:\npython3 runner.py --func [name of function]\nAll parameters can be changed in config.json file\nMost important parameters can be changed by adding --[name of parameter] [value of parameter]\nTo get the list of command line parameters for a particular function:\npython3 runner.py -h --func [name of function]\nIf function parameters are supplied, the config for this function is overwritten with new values\nTo suppress this behavior, use -n flag",
+    "start_list": {
+        "func_1": [
+            "20:00"
+        ],
+        "extract_vb_files_from_mail": [
+            "min 10"
+        ],
+        "vb_consolidated": [
+            "19:00"
+        ],
+        "func_3": [
+            "20:00"
+        ],
+        "extract_iz_files_from_mail": [
+            "19:10"
+        ],
+        "iz_consolidated": [
+            "19:30"
+        ]
+    },
+    "func_1": {
+        "args": {
+            "path": "my_excel_file.xlsx"
+        }
+    },
+    "func_2": {
+        "path": "another_excel_file.xlsx"
+    },
+    "func_3": {
+        "description": "Just primt a message",
+        "commands": {
+            "to_print": "a message to be printed"
+        },
+        "args": {
+            "to_print": "Hey there!"
+        }
+    },
+    "extract_vb_files_from_mail": {
+        "description": "Extracts Vakifbank report excel files from an Outlook folder,\ngives them a proper name and stores in a dedicated directory",
+        "commands": {
+            "target_directory": "Destinastion folder for storing report files",
+            "folder": "Outlook folder to look for new reports"
+        },
+        "args": {
+            "target_directory": null,
+            "folder": null,
+            "memory_file": "memory_iz_mail.json"
+        }
+    },
+    "vb_consolidated": {
+        "args": {
+            "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+            "memory_file": "memory_vb.json",
+            "consolidated_file": "vb_report.xlsx",
+            "entities": {
+                "NLMK Turkey": "NLMK TURKEY \u00c7EL\u0130K T\u0130CARET ANON\u0130M \u015e\u0130RKET\u0130",
+                "NLMK Trading": "NLMK Trading SA"
+            },
+            "look_for_curr": {
+                "tur": "HESAP T\u00dcR\u00dc",
+                "eng": "Need to fill!",
+                "horizontal_offset": 1
+            },
+            "report_columns": [
+                "transaction_time",
+                "value_date",
+                "currency",
+                "sum",
+                "balance_after",
+                "reference",
+                "comment",
+                "client",
+                "type"
+            ],
+            "trans_tur": {
+                "transaction_time": "HAREKET TARIH",
+                "value_date": "\u0130\u015eLEM TAR\u0130H\u0130",
+                "sum": "TUTAR",
+                "balance_after": "BAK\u0130YE",
+                "comment": "A\u00c7IKLAMA",
+                "reference": "\u0130\u015eLEM NO"
+            },
+            "trans_eng": {
+                "transaction_time": "Need to fill!",
+                "value_date": "Need to fill!",
+                "sum": "Need to fill!",
+                "balance_after": "Need to fill!",
+                "comment": "Need to fill!",
+                "reference": "Need to fill!"
+            }
+        }
+    },
+    "extract_iz_files_from_mail": {
+        "description": "Extracts excel Vakifbank report files from an Outlook folder,\ngives them a proper name and stores in a dedicated directory",
+        "commands": {
+            "target_directory": "Destinastion folder for storing report files",
+            "folder": "Outlook folder to look for new reports"
+        },
+        "args": {
+            "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+            "folder": "ab_iz",
+            "memory_file": "memory_iz_mail.json"
+        }
+    },
+    "iz_consolidated": {
+        "args": {
+            "target_directory": "C:\\Users\\user\\PycharmProjects\\scheduler\\",
+            "memory_file": "memory_iz.json",
+            "consolidated_file": "iz_report.xlsx",
+            "entities": {
+                "NLMK Turkey": "NLMK TURKEY \u00c7EL\u0130K T\u0130CARET",
+                "NLMK Trading": "NLMK TRAD\u0130NG SA"
+            },
+            "look_for_curr": {
+                "tur": "Mevcut Bakiye:",
+                "eng": "Current Balance:",
+                "horizontal_offset": 2
+            },
+            "look_for_client": {
+                "tur": "Say\u0131n",
+                "eng": "Dear"
+            },
+            "report_columns": [
+                "transaction_time",
+                "value_date",
+                "currency",
+                "sum",
+                "balance_after",
+                "comment",
+                "client",
+                "ref_curr",
+                "ref_time",
+                "type"
+            ],
+            "trans_tur": {
+                "transaction_time": "Tarih/Saat",
+                "value_date": "Val\u00f6r",
+                "sum": "\u0130\u015flem Tutar\u0131*",
+                "balance_after": "Bakiye",
+                "comment": "A\u00e7\u0131klama",
+                "reference": "Referans"
+            },
+            "trans_eng": {
+                "transaction_time": "Date/Time",
+                "value_date": "Value Date",
+                "sum": "Transaction\nAmount*",
+                "balance_after": "Balance",
+                "comment": "Description",
+                "reference": "Reference"
+            }
+        }
+    }
+}
