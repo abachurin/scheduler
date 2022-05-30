@@ -49,3 +49,4 @@ if __name__ == '__main__':
                 json.dump(config, f)
     globals()[name](func_args)
     print(f'{name} run is over\n-------------')
+
